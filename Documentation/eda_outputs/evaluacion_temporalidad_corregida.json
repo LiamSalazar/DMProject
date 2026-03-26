@@ -1,0 +1,51 @@
+{
+  "fgj_years": [
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "pobreza_years": [
+    2016,
+    2018,
+    2020
+  ],
+  "common_years": [
+    2016,
+    2018,
+    2020
+  ],
+  "lag_years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "alcaldias_comunes_contemporaneo": [
+    "ALVARO OBREGON",
+    "AZCAPOTZALCO",
+    "BENITO JUAREZ",
+    "COYOACAN",
+    "CUAJIMALPA DE MORELOS",
+    "CUAUHTEMOC",
+    "GUSTAVO A MADERO",
+    "IZTACALCO",
+    "IZTAPALAPA",
+    "LA MAGDALENA CONTRERAS",
+    "MIGUEL HIDALGO",
+    "MILPA ALTA",
+    "TLAHUAC",
+    "TLALPAN",
+    "VENUSTIANO CARRANZA",
+    "XOCHIMILCO"
+  ],
+  "n_obs_panel_contemporaneo": 48,
+  "n_obs_panel_rezagado": 90
+}

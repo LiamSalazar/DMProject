@@ -1,0 +1,40 @@
+DIAGNÓSTICO FINAL DEL NOTEBOOK
+================================================================================
+
+1) Calidad y cobertura de FGJ
+- Filas válidas posteriores a limpieza: 2,086,791
+- Años válidos de FGJ: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+- Alcaldías detectadas en FGJ: 17
+- Participación de robos territoriales sobre el total FGJ: 0.3041
+- Participación de fraude sobre el total FGJ: 0.0734
+
+2) Calidad y cobertura de pobreza
+- Filas totales pobreza: 842,342
+- Filas CDMX detectadas: 22,219
+- Share CDMX sobre pobreza total: 0.0264
+- Años detectados en pobreza CDMX: [2016, 2018, 2020]
+- Alcaldías mapeadas en pobreza CDMX: 16
+
+3) Temporalidad utilizable
+- Años comunes contemporáneos: [2016, 2018, 2020]
+- Años rezagados utilizables: [2021, 2022, 2023, 2024, 2025]
+- Filas panel contemporáneo: 48
+- Filas panel rezagado: 90
+
+4) Recomendación metodológica
+- Ventana principal recomendada: [2016, 2018, 2020], con análisis explicativo por alcaldía-año.
+- Ventana secundaria recomendada: [2021, 2022, 2023, 2024, 2025], usando pobreza promedio del periodo común para explorar persistencia sobre FGJ posterior.
+- Outcome principal sugerido: robos territoriales/patrimoniales agregados por alcaldía-año.
+- Outcome secundario sugerido: fraude, tratado como complemento y no como eje principal.
+- La predicción debe presentarse como componente exploratorio, no como objetivo central.
+
+5) Salidas clave generadas
+- fgj_top_delitos_clean.csv
+- fgj_agregado_alcaldia_anio_clean.csv
+- pobreza_agregado_alcaldia_anio_clean.csv
+- panel_contemporaneo.csv
+- panel_rezagado.csv
+- top_asociaciones_robos_territoriales_contemporaneo.csv
+- top_asociaciones_robos_territoriales_rezagado.csv
+- resumen_metricas_proyecto.json
+- diagnostico_final.txt

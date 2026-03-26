@@ -1,0 +1,48 @@
+{
+  "pobreza_total_filas": 842342,
+  "pobreza_filas_cdmx": 22219,
+  "share_cdmx_sobre_total": 0.02637764708396352,
+  "anios_cdmx_detectados": [
+    2016,
+    2018,
+    2020
+  ],
+  "n_alcaldias_mapeadas_cdmx": 16,
+  "municipios_distintos_cdmx": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "variables_continuas_usadas": [
+    "mmip",
+    "rei",
+    "nbi",
+    "CBDj",
+    "CSj",
+    "CENJ",
+    "ett",
+    "CASi",
+    "CASSi",
+    "cyt",
+    "ccevj"
+  ],
+  "variables_estrato_usadas": [
+    "E_mmip",
+    "E_rei",
+    "E_nbi"
+  ],
+  "encoding_usado": "cp1252"
+}

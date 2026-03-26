@@ -1,0 +1,11 @@
+{
+  "n_obs": 80,
+  "n_splits": 5,
+  "classes": [
+    "alto",
+    "bajo",
+    "medio"
+  ],
+  "accuracy": 0.7,
+  "balanced_accuracy": 0.6999050332383666
+}

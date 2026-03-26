@@ -1,0 +1,39 @@
+{
+  "fgj_filas_limpias": 2086791,
+  "fgj_anios_validos": [
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "pobreza_filas_cdmx": 22219,
+  "pobreza_anios_cdmx": [
+    2016,
+    2018,
+    2020
+  ],
+  "panel_contemporaneo_filas": 48,
+  "panel_rezagado_filas": 90,
+  "alcaldias_panel_contemporaneo": 16,
+  "alcaldias_panel_rezagado": 17,
+  "share_robos_territoriales_sobre_fgj": 0.30406494948463936,
+  "share_fraude_sobre_fgj": 0.07337294439165207,
+  "common_years": [
+    2016,
+    2018,
+    2020
+  ],
+  "lag_years": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ]
+}

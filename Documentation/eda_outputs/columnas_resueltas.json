@@ -1,0 +1,37 @@
+{
+  "FGJ_COLS": {
+    "anio_hecho": "anio_hecho",
+    "anio_inicio": "anio_inicio",
+    "fecha_hecho": "fecha_hecho",
+    "fecha_inicio": "fecha_inicio",
+    "delito": "delito",
+    "categoria": null,
+    "alcaldia_hecho": "alcaldia_hecho",
+    "alcaldia_cat": null,
+    "municipio": null,
+    "latitud": "latitud",
+    "longitud": "longitud"
+  },
+  "POB_COLS": {
+    "anio": "año",
+    "entidad": "entidad",
+    "municipio": "municipio",
+    "cvegeo": null,
+    "factor": "factor",
+    "mmip": "mmip",
+    "rei": "rei",
+    "nbi": "nbi",
+    "CBDj": "CBDj",
+    "CSj": "CSj",
+    "CTEU": null,
+    "CENJ": "CENJ",
+    "ett": "ett",
+    "CASi": "CASi",
+    "CASSi": "CASSi",
+    "cyt": "cyt",
+    "ccevj": "ccevj",
+    "E_mmip": "E_mmip",
+    "E_rei": "E_rei",
+    "E_nbi": "E_nbi"
+  }
+}
