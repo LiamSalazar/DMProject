@@ -1,9 +1,12 @@
 # Archivos pesados de datasets (ENIGH y FGJ)
 datasets/enigh_16_20.csv
 datasets/carpetasFGJ_acumulado_2025_01.csv
+csv_tableau/fgj_tableau_mensual_alcaldia.csv
+csv_tableau/pobreza_tableau_alcaldia_anio.csv
 
 # Es recomendable ignorar toda la carpeta de datos si vas a descargar más
 datasets/
+csv_tableau/
 
 # Archivos temporales de Python/Jupyter (comunes en minería de datos)
 __pycache__/
