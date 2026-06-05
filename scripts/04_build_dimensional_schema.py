@@ -14,14 +14,15 @@ from etl_common import (
     INFRA_FEATURES,
     INFRA_SNAPSHOT_TIME_ID,
     INFRA_SNAPSHOT_YEAR,
+    INFRA_TEMPORALITY,
     INFRA_USE_RECOMMENDED,
     MONTH_NAMES,
-    ROBO_SUBTIPOS,
+    ROBBERY_ONLY_DIR,
+    ROBO_PATRIMONIAL_SUBTIPOS,
     ROBO_SUBTIPO_COLUMNS,
     ROOT,
     SOCIAL_FEATURES,
     SOCIAL_VARIABLES,
-    alcaldia_nombre,
     ensure_dirs,
     load_metadata,
     load_mmip_dictionary,
@@ -34,10 +35,13 @@ from etl_common import (
 FUENTE_IDS = {
     "pobreza_mmip": 1,
     "infraestructura": 2,
-    "fgj": 3,
-    "panel_integrado_etl": 4,
+    "fgj_general": 3,
+    "fgj_robos_patrimoniales": 4,
+    "panel_integrado_etl": 5,
 }
-DELITO_SUBTIPO_ID = {subtipo: idx for idx, subtipo in enumerate(ROBO_SUBTIPOS, start=1)}
+DELITO_SUBTIPO_ID = {
+    subtipo: idx for idx, subtipo in enumerate(ROBO_PATRIMONIAL_SUBTIPOS, start=1)
+}
 
 
 def _safe_read(path):
@@ -45,9 +49,8 @@ def _safe_read(path):
 
 
 def build_dim_alcaldia() -> pd.DataFrame:
-    rows = []
-    for key in CANONICAL_ALCALDIAS:
-        rows.append(
+    return pd.DataFrame(
+        [
             {
                 "alcaldia_id": ALCALDIA_ID[key],
                 "alcaldia_key": key,
@@ -56,8 +59,9 @@ def build_dim_alcaldia() -> pd.DataFrame:
                 "cve_ent": 9,
                 "entidad_nombre": "Ciudad De Mexico",
             }
-        )
-    return pd.DataFrame(rows)
+            for key in CANONICAL_ALCALDIAS
+        ]
+    )
 
 
 def build_dim_tiempo(*frames: pd.DataFrame) -> pd.DataFrame:
@@ -66,13 +70,9 @@ def build_dim_tiempo(*frames: pd.DataFrame) -> pd.DataFrame:
         if frame.empty:
             continue
         if "tiempo_id" in frame.columns:
-            tiempo_ids.update(
-                int(x) for x in pd.to_numeric(frame["tiempo_id"], errors="coerce").dropna()
-            )
+            tiempo_ids.update(int(x) for x in pd.to_numeric(frame["tiempo_id"], errors="coerce").dropna())
         elif "anio" in frame.columns:
-            tiempo_ids.update(
-                int(x) * 100 for x in pd.to_numeric(frame["anio"], errors="coerce").dropna()
-            )
+            tiempo_ids.update(int(x) * 100 for x in pd.to_numeric(frame["anio"], errors="coerce").dropna())
     rows = []
     for tid in sorted(tiempo_ids):
         anio = tid // 100
@@ -103,16 +103,15 @@ def build_dim_colonia(infra_clean: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(
             columns=["colonia_id", "alcaldia_id", "colonia_key", "colonia_nombre", "cve_col"]
         )
-    cols = ["alcaldia_id", "colonia_key", "colonia_nombre", "cve_col"]
     dim = (
-        infra_clean[[c for c in cols if c in infra_clean.columns]]
+        infra_clean[["alcaldia_id", "colonia_key", "colonia_nombre", "cve_col"]]
         .dropna(subset=["alcaldia_id", "colonia_key"])
         .drop_duplicates()
         .sort_values(["alcaldia_id", "colonia_key", "cve_col"])
         .reset_index(drop=True)
     )
     dim.insert(0, "colonia_id", range(1, len(dim) + 1))
-    return dim[["colonia_id", "alcaldia_id", "colonia_key", "colonia_nombre", "cve_col"]]
+    return dim
 
 
 def build_dim_delito_subtipo() -> pd.DataFrame:
@@ -123,7 +122,6 @@ def build_dim_delito_subtipo() -> pd.DataFrame:
         "ROBO_DE_VEHICULO": "Robo de vehiculo clasificado desde delito.",
         "ROBO_DE_ACCESORIOS_AUTO": "Robo de accesorios de auto clasificado desde delito.",
         "ROBO_DEL_INTERIOR_DE_VEHICULO": "Robo de objetos del interior de vehiculo.",
-        "OTRO": "Delitos no incluidos en el target principal de robos patrimoniales.",
     }
     return pd.DataFrame(
         [
@@ -131,9 +129,9 @@ def build_dim_delito_subtipo() -> pd.DataFrame:
                 "delito_subtipo_id": DELITO_SUBTIPO_ID[subtipo],
                 "subtipo_robo_patrimonial": subtipo,
                 "descripcion": descriptions[subtipo],
-                "es_robo_patrimonial": subtipo != "OTRO",
+                "es_robo_patrimonial": True,
             }
-            for subtipo in ROBO_SUBTIPOS
+            for subtipo in ROBO_PATRIMONIAL_SUBTIPOS
         ]
     )
 
@@ -181,9 +179,8 @@ def build_dim_variable_infraestructura() -> pd.DataFrame:
         ("electricidad_promedio", "p_porcelec", "promedio"),
         ("drenaje_promedio", "r_val_dren", "promedio"),
     ]
-    rows = []
-    for idx, (name, origin, method) in enumerate(variable_specs, start=1):
-        rows.append(
+    return pd.DataFrame(
+        [
             {
                 "variable_infraestructura_id": idx,
                 "variable_nombre": name,
@@ -191,11 +188,12 @@ def build_dim_variable_infraestructura() -> pd.DataFrame:
                 "descripcion": f"Indicador de infraestructura {name} desde snapshot 2022.",
                 "metodo_agregacion": method,
                 "actualizacion_anio": INFRA_SNAPSHOT_YEAR,
-                "temporalidad": "static_snapshot_2022",
+                "temporalidad": INFRA_TEMPORALITY,
                 "recomendada_modelado": name in INFRA_FEATURES,
             }
-        )
-    return pd.DataFrame(rows)
+            for idx, (name, origin, method) in enumerate(variable_specs, start=1)
+        ]
+    )
 
 
 def build_dim_fuente_datos() -> pd.DataFrame:
@@ -226,15 +224,26 @@ def build_dim_fuente_datos() -> pd.DataFrame:
                 "notas_uso": INFRA_USE_RECOMMENDED,
             },
             {
-                "fuente_datos_id": FUENTE_IDS["fgj"],
-                "fuente_nombre": "FGJ carpetas de investigacion",
+                "fuente_datos_id": FUENTE_IDS["fgj_general"],
+                "fuente_nombre": "FGJ delitos generales",
                 "fuente_tipo": "csv",
                 "archivo_origen": detected.get("fgj", "datasets/carpetasFGJ_acumulado_2025_01.csv"),
                 "carpeta_origen": "datasets",
-                "cobertura_temporal": "segun archivo original",
+                "cobertura_temporal": "2016-2025",
+                "granularidad_original": "carpeta de investigacion",
+                "granularidad_final": "alcaldia-anio",
+                "notas_uso": "Control anual de delitos generales FGJ.",
+            },
+            {
+                "fuente_datos_id": FUENTE_IDS["fgj_robos_patrimoniales"],
+                "fuente_nombre": "FGJ robos patrimoniales",
+                "fuente_tipo": "csv derivado",
+                "archivo_origen": "data/processed/robbery_only/fgj_robos_patrimoniales_clean.csv",
+                "carpeta_origen": "data/processed/robbery_only",
+                "cobertura_temporal": "2016-2025",
                 "granularidad_original": "carpeta de investigacion",
                 "granularidad_final": "alcaldia-mes-subtipo y alcaldia-anio",
-                "notas_uso": "Clasificacion exploratoria de robos patrimoniales por texto de delito.",
+                "notas_uso": "Solo seis subtipos patrimoniales; no incluye OTRO.",
             },
             {
                 "fuente_datos_id": FUENTE_IDS["panel_integrado_etl"],
@@ -253,50 +262,61 @@ def build_dim_fuente_datos() -> pd.DataFrame:
 
 def build_facts(
     dim_colonia: pd.DataFrame,
-    delitos_mes: pd.DataFrame,
-    delitos_anio: pd.DataFrame,
+    delitos_generales: pd.DataFrame,
+    robos_mes: pd.DataFrame,
+    robos_anio: pd.DataFrame,
     pobreza: pd.DataFrame,
     infraestructura: pd.DataFrame,
     infra_clean: pd.DataFrame,
     panel: pd.DataFrame,
 ) -> dict[str, pd.DataFrame]:
-    delito_subtipo_id_map = DELITO_SUBTIPO_ID
-
-    fact_delitos_mes = delitos_mes.copy()
-    if not fact_delitos_mes.empty:
-        fact_delitos_mes["delito_subtipo_id"] = fact_delitos_mes[
-            "subtipo_robo_patrimonial"
-        ].map(delito_subtipo_id_map)
-        fact_delitos_mes["fuente_datos_id"] = FUENTE_IDS["fgj"]
-        fact_delitos_mes = fact_delitos_mes[
-            [
-                "alcaldia_id",
-                "tiempo_id",
-                "delito_subtipo_id",
-                "fuente_datos_id",
-                "total_delitos",
-                "registros_con_coordenadas",
-                "latitud_promedio",
-                "longitud_promedio",
-            ]
+    fact_delitos_generales = delitos_generales.copy()
+    fact_delitos_generales["fuente_datos_id"] = FUENTE_IDS["fgj_general"]
+    fact_delitos_generales = fact_delitos_generales[
+        [
+            "alcaldia_id",
+            "tiempo_id",
+            "fuente_datos_id",
+            "total_delitos_fgj",
+            "total_robos_patrimoniales",
+            "total_no_robos_patrimoniales",
+            "share_robos_patrimoniales_sobre_total_delitos",
         ]
+    ]
 
-    fact_delitos_anio = delitos_anio.copy()
-    if not fact_delitos_anio.empty:
-        fact_delitos_anio["fuente_datos_id"] = FUENTE_IDS["fgj"]
-        for col in ROBO_SUBTIPO_COLUMNS.values():
-            if col not in fact_delitos_anio.columns:
-                fact_delitos_anio[col] = 0
-        fact_delitos_anio = fact_delitos_anio[
-            [
-                "alcaldia_id",
-                "tiempo_id",
-                "fuente_datos_id",
-                "total_delitos_fgj",
-                "total_robos_patrimoniales",
-                *ROBO_SUBTIPO_COLUMNS.values(),
-            ]
+    fact_robos_mes = robos_mes.copy()
+    fact_robos_mes["delito_subtipo_id"] = fact_robos_mes["subtipo_robo_patrimonial"].map(DELITO_SUBTIPO_ID)
+    fact_robos_mes["fuente_datos_id"] = FUENTE_IDS["fgj_robos_patrimoniales"]
+    fact_robos_mes = fact_robos_mes[
+        [
+            "alcaldia_id",
+            "tiempo_id",
+            "delito_subtipo_id",
+            "fuente_datos_id",
+            "total_robos_patrimoniales",
+            "registros_con_coordenadas",
+            "latitud_promedio",
+            "longitud_promedio",
         ]
+    ]
+
+    fact_robos_anio = robos_anio.copy()
+    fact_robos_anio["fuente_datos_id"] = FUENTE_IDS["fgj_robos_patrimoniales"]
+    fact_robos_anio = fact_robos_anio[
+        [
+            "alcaldia_id",
+            "tiempo_id",
+            "fuente_datos_id",
+            "target_robos_patrimoniales_total",
+            "robo_a_transeunte",
+            "robo_a_negocio",
+            "robo_a_casa_habitacion",
+            "robo_de_vehiculo",
+            "robo_de_accesorios_auto",
+            "robo_del_interior_de_vehiculo",
+            "target_robos_log1p",
+        ]
+    ]
 
     fact_pobreza = pobreza.copy()
     fact_pobreza["fuente_datos_id"] = FUENTE_IDS["pobreza_mmip"]
@@ -320,7 +340,7 @@ def build_facts(
         "fuente_datos_id",
         "infraestructura_actualizacion_anio",
         "infraestructura_es_snapshot",
-        "infraestructura_uso_recomendado",
+        "infraestructura_temporalidad",
         "colonias_count",
         "ba1_noeqsa_sum",
         "ba8_nomerc_sum",
@@ -340,40 +360,39 @@ def build_facts(
     fact_infra_alcaldia = fact_infra_alcaldia[expected_infra_alcaldia]
 
     fact_infra_colonia = infra_clean.copy()
-    if not fact_infra_colonia.empty:
-        join_cols = ["alcaldia_id", "colonia_key", "cve_col"]
-        fact_infra_colonia = fact_infra_colonia.merge(
-            dim_colonia[join_cols + ["colonia_id"]],
-            on=join_cols,
-            how="left",
-        )
-        fact_infra_colonia["snapshot_tiempo_id"] = INFRA_SNAPSHOT_TIME_ID
-        fact_infra_colonia["fuente_datos_id"] = FUENTE_IDS["infraestructura"]
-        expected_infra_colonia = [
-            "colonia_id",
-            "alcaldia_id",
-            "snapshot_tiempo_id",
-            "fuente_datos_id",
-            "infraestructura_actualizacion_anio",
-            "infraestructura_es_snapshot",
-            "infraestructura_uso_recomendado",
-            "cve_col",
-            "ba1_noeqsa",
-            "ba8_nomerc",
-            "ba8_noloca",
-            "ba9_no_gua",
-            "ba3_noeqed",
-            "resid_ton",
-            "alump_sum",
-            "alump_mean",
-            "p_porcelec",
-            "p_aguapot",
-            "r_val_dren",
-        ]
-        for col in expected_infra_colonia:
-            if col not in fact_infra_colonia.columns:
-                fact_infra_colonia[col] = np.nan
-        fact_infra_colonia = fact_infra_colonia[expected_infra_colonia]
+    join_cols = ["alcaldia_id", "colonia_key", "cve_col"]
+    fact_infra_colonia = fact_infra_colonia.merge(
+        dim_colonia[join_cols + ["colonia_id"]],
+        on=join_cols,
+        how="left",
+    )
+    fact_infra_colonia["snapshot_tiempo_id"] = INFRA_SNAPSHOT_TIME_ID
+    fact_infra_colonia["fuente_datos_id"] = FUENTE_IDS["infraestructura"]
+    expected_infra_colonia = [
+        "colonia_id",
+        "alcaldia_id",
+        "snapshot_tiempo_id",
+        "fuente_datos_id",
+        "infraestructura_actualizacion_anio",
+        "infraestructura_es_snapshot",
+        "infraestructura_temporalidad",
+        "cve_col",
+        "ba1_noeqsa",
+        "ba8_nomerc",
+        "ba8_noloca",
+        "ba9_no_gua",
+        "ba3_noeqed",
+        "resid_ton",
+        "alump_sum",
+        "alump_mean",
+        "p_porcelec",
+        "p_aguapot",
+        "r_val_dren",
+    ]
+    for col in expected_infra_colonia:
+        if col not in fact_infra_colonia.columns:
+            fact_infra_colonia[col] = np.nan
+    fact_infra_colonia = fact_infra_colonia[expected_infra_colonia]
 
     fact_panel = panel.copy()
     fact_panel["fuente_datos_id"] = FUENTE_IDS["panel_integrado_etl"]
@@ -382,6 +401,8 @@ def build_facts(
         "tiempo_id",
         "fuente_datos_id",
         "target_robos_patrimoniales_total",
+        "target_robos_log1p",
+        "share_robos_patrimoniales_sobre_total_delitos",
         "total_delitos_fgj",
         "n_registros_sociales",
         "factor_sum",
@@ -389,7 +410,7 @@ def build_facts(
         *INFRA_FEATURES,
         "infraestructura_actualizacion_anio",
         "infraestructura_es_snapshot",
-        "infraestructura_uso_recomendado",
+        "infraestructura_temporalidad",
         "anio",
         "alcaldia_key",
         "alcaldia_nombre",
@@ -400,8 +421,9 @@ def build_facts(
     fact_panel = fact_panel[panel_cols]
 
     return {
-        "fact_delitos_alcaldia_mes_subtipo": fact_delitos_mes,
-        "fact_delitos_alcaldia_anio": fact_delitos_anio,
+        "fact_delitos_generales_alcaldia_anio": fact_delitos_generales,
+        "fact_robos_patrimoniales_alcaldia_mes_subtipo": fact_robos_mes,
+        "fact_robos_patrimoniales_alcaldia_anio": fact_robos_anio,
         "fact_pobreza_alcaldia_anio": fact_pobreza,
         "fact_infraestructura_alcaldia": fact_infra_alcaldia,
         "fact_infraestructura_colonia": fact_infra_colonia,
@@ -412,44 +434,47 @@ def build_facts(
 def write_dimensional_readme() -> None:
     text = """# Esquema dimensional
 
-Este modelo usa una constelacion de hechos: delitos, pobreza, infraestructura y panel analitico se guardan como hechos separados que comparten dimensiones de alcaldia, tiempo, fuente y, cuando aplica, colonia o subtipo de delito.
+El modelo usa una constelacion de hechos: pobreza, infraestructura, delitos generales, robos patrimoniales y panel analitico se guardan como hechos separados conectados por dimensiones compartidas.
 
-## Uso recomendado
+## Dimensiones
 
-- BI territorial: `fact_delitos_alcaldia_anio`, `fact_pobreza_alcaldia_anio` y `fact_infraestructura_alcaldia`.
-- Analisis mensual: `fact_delitos_alcaldia_mes_subtipo`.
-- Analisis por colonia: `fact_infraestructura_colonia`.
-- ML exploratorio: `analytics.modeling_panel` o `dw.fact_panel_analitico_alcaldia_anio`.
+- `dim_alcaldia`: 16 alcaldias canonicas.
+- `dim_tiempo`: anios `YYYY00`, meses `YYYYMM` y snapshot `202200`.
+- `dim_colonia`: colonias de infraestructura.
+- `dim_delito_subtipo`: solo los seis subtipos patrimoniales, sin `OTRO`.
+- `dim_variable_social`, `dim_variable_infraestructura`, `dim_fuente_datos`: trazabilidad.
 
-Infraestructura es un snapshot 2022: `infraestructura_actualizacion_anio = 2022`, `infraestructura_es_snapshot = true` e `infraestructura_uso_recomendado = "variable estructural contextual; no interpretar como medicion anual"`. No debe interpretarse como medicion anual.
+## Hechos y grano
 
-## Grano de hechos
+- `fact_delitos_generales_alcaldia_anio`: una fila por alcaldia-anio.
+- `fact_robos_patrimoniales_alcaldia_mes_subtipo`: una fila por alcaldia-mes-subtipo.
+- `fact_robos_patrimoniales_alcaldia_anio`: una fila por alcaldia-anio.
+- `fact_pobreza_alcaldia_anio`: una fila por alcaldia-anio.
+- `fact_infraestructura_alcaldia`: una fila por alcaldia, snapshot 2022.
+- `fact_infraestructura_colonia`: una fila por colonia, snapshot 2022.
+- `fact_panel_analitico_alcaldia_anio`: una fila por alcaldia-anio.
 
-- `fact_delitos_alcaldia_mes_subtipo`: alcaldia, mes y subtipo.
-- `fact_delitos_alcaldia_anio`: alcaldia y anio.
-- `fact_pobreza_alcaldia_anio`: alcaldia y anio.
-- `fact_infraestructura_alcaldia`: alcaldia con snapshot 2022.
-- `fact_infraestructura_colonia`: colonia con snapshot 2022.
-- `fact_panel_analitico_alcaldia_anio`: alcaldia y anio.
+Las dimensiones tienen primary keys surrogate enteras. Los hechos usan `alcaldia_id`, `tiempo_id`, `snapshot_tiempo_id`, `colonia_id`, `delito_subtipo_id` y `fuente_datos_id` como llaves foraneas.
 
-Las llaves primarias son surrogate keys enteras en dimensiones. Las tablas de hechos referencian esas llaves con `alcaldia_id`, `tiempo_id`, `snapshot_tiempo_id`, `colonia_id`, `delito_subtipo_id` y `fuente_datos_id`.
+Infraestructura debe interpretarse como snapshot estructural 2022: `infraestructura_actualizacion_anio = 2022`, `infraestructura_es_snapshot = true`, `infraestructura_temporalidad = static_snapshot_2022`. No es medicion anual.
 
-## Riesgos de interpretacion
-
-No afirmar causalidad. El panel principal es pequeno si solo contiene 16 alcaldias por 3 anios. Revisar nulos y valores extremos antes de modelar.
+Para BI territorial usa hechos anuales; para robos mensuales usa `fact_robos_patrimoniales_alcaldia_mes_subtipo`; para reconstruir el panel une `fact_panel_analitico_alcaldia_anio` con `dim_alcaldia` y `dim_tiempo`. No afirmar causalidad y revisar el tamano pequeno del panel antes de modelar.
 
 ## Diagrama ER
 
 ```mermaid
 erDiagram
 dim_alcaldia ||--o{ dim_colonia : alcaldia_id
-dim_alcaldia ||--o{ fact_delitos_alcaldia_mes_subtipo : alcaldia_id
-dim_tiempo ||--o{ fact_delitos_alcaldia_mes_subtipo : tiempo_id
-dim_delito_subtipo ||--o{ fact_delitos_alcaldia_mes_subtipo : delito_subtipo_id
-dim_fuente_datos ||--o{ fact_delitos_alcaldia_mes_subtipo : fuente_datos_id
-dim_alcaldia ||--o{ fact_delitos_alcaldia_anio : alcaldia_id
-dim_tiempo ||--o{ fact_delitos_alcaldia_anio : tiempo_id
-dim_fuente_datos ||--o{ fact_delitos_alcaldia_anio : fuente_datos_id
+dim_alcaldia ||--o{ fact_delitos_generales_alcaldia_anio : alcaldia_id
+dim_tiempo ||--o{ fact_delitos_generales_alcaldia_anio : tiempo_id
+dim_fuente_datos ||--o{ fact_delitos_generales_alcaldia_anio : fuente_datos_id
+dim_alcaldia ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : alcaldia_id
+dim_tiempo ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : tiempo_id
+dim_delito_subtipo ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : delito_subtipo_id
+dim_fuente_datos ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : fuente_datos_id
+dim_alcaldia ||--o{ fact_robos_patrimoniales_alcaldia_anio : alcaldia_id
+dim_tiempo ||--o{ fact_robos_patrimoniales_alcaldia_anio : tiempo_id
+dim_fuente_datos ||--o{ fact_robos_patrimoniales_alcaldia_anio : fuente_datos_id
 dim_alcaldia ||--o{ fact_pobreza_alcaldia_anio : alcaldia_id
 dim_tiempo ||--o{ fact_pobreza_alcaldia_anio : tiempo_id
 dim_fuente_datos ||--o{ fact_pobreza_alcaldia_anio : fuente_datos_id
@@ -467,7 +492,7 @@ dim_fuente_datos ||--o{ fact_panel_analitico_alcaldia_anio : fuente_datos_id
 
 ## Carga futura en PostgreSQL
 
-Crear la base manualmente y ejecutar desde la raiz del proyecto:
+Ejecutar desde la raiz del proyecto:
 
 ```sql
 \\i sql/01_create_schemas.sql
@@ -486,16 +511,20 @@ Crear la base manualmente y ejecutar desde la raiz del proyecto:
 
 def main() -> None:
     ensure_dirs()
+    for old_csv in DIMENSIONAL_DIR.glob("*.csv"):
+        old_csv.unlink()
+
     pobreza = _safe_read(ANALYTICS_DIR / "pobreza_alcaldia_anio.csv")
     infraestructura = _safe_read(ANALYTICS_DIR / "infraestructura_alcaldia.csv")
-    delitos_mes = _safe_read(ANALYTICS_DIR / "delitos_alcaldia_mes_subtipo.csv")
-    delitos_anio = _safe_read(ANALYTICS_DIR / "delitos_alcaldia_anio.csv")
+    delitos_generales = _safe_read(ANALYTICS_DIR / "delitos_alcaldia_anio.csv")
+    robos_mes = _safe_read(ROBBERY_ONLY_DIR / "robos_patrimoniales_alcaldia_mes_subtipo.csv")
+    robos_anio = _safe_read(ROBBERY_ONLY_DIR / "robos_patrimoniales_alcaldia_anio.csv")
     panel = _safe_read(ANALYTICS_DIR / "panel_alcaldia_anio.csv")
     infra_clean = _safe_read(CLEAN_DIR / "infraestructura_clean.csv")
 
     dims = {
         "dim_alcaldia": build_dim_alcaldia(),
-        "dim_tiempo": build_dim_tiempo(pobreza, infraestructura, delitos_mes, delitos_anio, panel),
+        "dim_tiempo": build_dim_tiempo(pobreza, delitos_generales, robos_mes, robos_anio, panel),
         "dim_delito_subtipo": build_dim_delito_subtipo(),
         "dim_variable_social": build_dim_variable_social(),
         "dim_variable_infraestructura": build_dim_variable_infraestructura(),
@@ -505,8 +534,9 @@ def main() -> None:
 
     facts = build_facts(
         dims["dim_colonia"],
-        delitos_mes,
-        delitos_anio,
+        delitos_generales,
+        robos_mes,
+        robos_anio,
         pobreza,
         infraestructura,
         infra_clean,

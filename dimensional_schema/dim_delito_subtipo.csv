@@ -5,4 +5,3 @@ delito_subtipo_id,subtipo_robo_patrimonial,descripcion,es_robo_patrimonial
 4,ROBO_DE_VEHICULO,Robo de vehiculo clasificado desde delito.,True
 5,ROBO_DE_ACCESORIOS_AUTO,Robo de accesorios de auto clasificado desde delito.,True
 6,ROBO_DEL_INTERIOR_DE_VEHICULO,Robo de objetos del interior de vehiculo.,True
-7,OTRO,Delitos no incluidos en el target principal de robos patrimoniales.,False

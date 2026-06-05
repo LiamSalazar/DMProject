@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS clean.infraestructura_clean (
     colonia_nombre text,
     infraestructura_actualizacion_anio integer,
     infraestructura_es_snapshot boolean,
+    infraestructura_temporalidad text,
     infraestructura_uso_recomendado text
 );
 
@@ -106,6 +107,6 @@ CREATE TABLE IF NOT EXISTS clean.fgj_clean (
     latitud double precision,
     longitud double precision,
     subtipo_robo_patrimonial text,
-    is_robo_patrimonial boolean
+    is_robo_patrimonial integer
 );
 

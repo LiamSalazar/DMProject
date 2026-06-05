@@ -67,29 +67,39 @@ CREATE TABLE IF NOT EXISTS dw.dim_fuente_datos (
     notas_uso text
 );
 
-CREATE TABLE IF NOT EXISTS dw.fact_delitos_alcaldia_mes_subtipo (
-    alcaldia_id integer,
-    tiempo_id integer,
-    delito_subtipo_id integer,
-    fuente_datos_id integer,
-    total_delitos bigint,
-    registros_con_coordenadas integer,
-    latitud_promedio double precision,
-    longitud_promedio double precision
-);
-
-CREATE TABLE IF NOT EXISTS dw.fact_delitos_alcaldia_anio (
+CREATE TABLE IF NOT EXISTS dw.fact_delitos_generales_alcaldia_anio (
     alcaldia_id integer,
     tiempo_id integer,
     fuente_datos_id integer,
     total_delitos_fgj bigint,
     total_robos_patrimoniales bigint,
+    total_no_robos_patrimoniales bigint,
+    share_robos_patrimoniales_sobre_total_delitos double precision
+);
+
+CREATE TABLE IF NOT EXISTS dw.fact_robos_patrimoniales_alcaldia_mes_subtipo (
+    alcaldia_id integer,
+    tiempo_id integer,
+    delito_subtipo_id integer,
+    fuente_datos_id integer,
+    total_robos_patrimoniales bigint,
+    registros_con_coordenadas integer,
+    latitud_promedio double precision,
+    longitud_promedio double precision
+);
+
+CREATE TABLE IF NOT EXISTS dw.fact_robos_patrimoniales_alcaldia_anio (
+    alcaldia_id integer,
+    tiempo_id integer,
+    fuente_datos_id integer,
+    target_robos_patrimoniales_total bigint,
     robo_a_transeunte bigint,
     robo_a_negocio bigint,
     robo_a_casa_habitacion bigint,
     robo_de_vehiculo bigint,
     robo_de_accesorios_auto bigint,
-    robo_del_interior_de_vehiculo bigint
+    robo_del_interior_de_vehiculo bigint,
+    target_robos_log1p double precision
 );
 
 CREATE TABLE IF NOT EXISTS dw.fact_pobreza_alcaldia_anio (
@@ -118,7 +128,7 @@ CREATE TABLE IF NOT EXISTS dw.fact_infraestructura_alcaldia (
     fuente_datos_id integer,
     infraestructura_actualizacion_anio integer,
     infraestructura_es_snapshot boolean,
-    infraestructura_uso_recomendado text,
+    infraestructura_temporalidad text,
     colonias_count bigint,
     ba1_noeqsa_sum bigint,
     ba8_nomerc_sum bigint,
@@ -140,7 +150,7 @@ CREATE TABLE IF NOT EXISTS dw.fact_infraestructura_colonia (
     fuente_datos_id integer,
     infraestructura_actualizacion_anio integer,
     infraestructura_es_snapshot boolean,
-    infraestructura_uso_recomendado text,
+    infraestructura_temporalidad text,
     cve_col text,
     ba1_noeqsa bigint,
     ba8_nomerc bigint,
@@ -160,6 +170,8 @@ CREATE TABLE IF NOT EXISTS dw.fact_panel_analitico_alcaldia_anio (
     tiempo_id integer,
     fuente_datos_id integer,
     target_robos_patrimoniales_total bigint,
+    target_robos_log1p double precision,
+    share_robos_patrimoniales_sobre_total_delitos double precision,
     total_delitos_fgj bigint,
     n_registros_sociales integer,
     factor_sum bigint,
@@ -187,7 +199,7 @@ CREATE TABLE IF NOT EXISTS dw.fact_panel_analitico_alcaldia_anio (
     drenaje_promedio double precision,
     infraestructura_actualizacion_anio integer,
     infraestructura_es_snapshot boolean,
-    infraestructura_uso_recomendado text,
+    infraestructura_temporalidad text,
     anio integer,
     alcaldia_key text,
     alcaldia_nombre text

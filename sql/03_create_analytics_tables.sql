@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS analytics.infraestructura_alcaldia (
     colonias_count bigint,
     infraestructura_actualizacion_anio integer,
     infraestructura_es_snapshot boolean,
+    infraestructura_temporalidad text,
     infraestructura_uso_recomendado text,
     ba1_noeqsa_sum bigint,
     ba8_nomerc_sum bigint,
@@ -62,20 +63,6 @@ CREATE TABLE IF NOT EXISTS analytics.infraestructura_alcaldia (
     drenaje_promedio double precision
 );
 
-CREATE TABLE IF NOT EXISTS analytics.delitos_alcaldia_mes_subtipo (
-    alcaldia_key text,
-    alcaldia_nombre text,
-    alcaldia_id integer,
-    anio integer,
-    mes integer,
-    tiempo_id integer,
-    subtipo_robo_patrimonial text,
-    total_delitos bigint,
-    registros_con_coordenadas integer,
-    latitud_promedio double precision,
-    longitud_promedio double precision
-);
-
 CREATE TABLE IF NOT EXISTS analytics.delitos_alcaldia_anio (
     alcaldia_key text,
     alcaldia_nombre text,
@@ -84,13 +71,56 @@ CREATE TABLE IF NOT EXISTS analytics.delitos_alcaldia_anio (
     tiempo_id integer,
     total_delitos_fgj bigint,
     total_robos_patrimoniales bigint,
+    total_no_robos_patrimoniales bigint,
+    share_robos_patrimoniales_sobre_total_delitos double precision
+);
+
+CREATE TABLE IF NOT EXISTS analytics.fgj_robos_patrimoniales_clean (
+    fecha_hecho date,
+    fecha_inicio date,
+    anio_hecho_clean bigint,
+    mes_hecho_clean bigint,
+    delito text,
+    delito_key text,
+    categoria_delito text,
+    alcaldia_key text,
+    alcaldia_nombre text,
+    colonia_key text,
+    colonia_hecho text,
+    latitud double precision,
+    longitud double precision,
+    subtipo_robo_patrimonial text,
+    is_robo_patrimonial integer
+);
+
+CREATE TABLE IF NOT EXISTS analytics.robos_patrimoniales_alcaldia_mes_subtipo (
+    alcaldia_key text,
+    alcaldia_nombre text,
+    alcaldia_id integer,
+    anio integer,
+    mes integer,
+    tiempo_id integer,
+    subtipo_robo_patrimonial text,
+    total_robos_patrimoniales bigint,
+    registros_con_coordenadas integer,
+    latitud_promedio double precision,
+    longitud_promedio double precision
+);
+
+CREATE TABLE IF NOT EXISTS analytics.robos_patrimoniales_alcaldia_anio (
+    alcaldia_key text,
+    alcaldia_nombre text,
+    alcaldia_id integer,
+    anio integer,
+    tiempo_id integer,
     target_robos_patrimoniales_total bigint,
     robo_a_transeunte bigint,
     robo_a_negocio bigint,
     robo_a_casa_habitacion bigint,
     robo_de_vehiculo bigint,
     robo_de_accesorios_auto bigint,
-    robo_del_interior_de_vehiculo bigint
+    robo_del_interior_de_vehiculo bigint,
+    target_robos_log1p double precision
 );
 
 CREATE TABLE IF NOT EXISTS analytics.panel_alcaldia_anio (
@@ -114,7 +144,7 @@ CREATE TABLE IF NOT EXISTS analytics.panel_alcaldia_anio (
     cassi_wmean double precision,
     cyt_wmean double precision,
     total_delitos_fgj bigint,
-    total_robos_patrimoniales bigint,
+    share_robos_patrimoniales_sobre_total_delitos double precision,
     target_robos_patrimoniales_total bigint,
     robo_a_transeunte bigint,
     robo_a_negocio bigint,
@@ -122,6 +152,13 @@ CREATE TABLE IF NOT EXISTS analytics.panel_alcaldia_anio (
     robo_de_vehiculo bigint,
     robo_de_accesorios_auto bigint,
     robo_del_interior_de_vehiculo bigint,
+    target_robos_log1p double precision,
+    share_robo_a_transeunte double precision,
+    share_robo_a_negocio double precision,
+    share_robo_a_casa_habitacion double precision,
+    share_robo_de_vehiculo double precision,
+    share_robo_de_accesorios_auto double precision,
+    share_robo_del_interior_de_vehiculo double precision,
     colonias_count bigint,
     mercados_total bigint,
     locales_total bigint,
@@ -135,6 +172,7 @@ CREATE TABLE IF NOT EXISTS analytics.panel_alcaldia_anio (
     drenaje_promedio double precision,
     infraestructura_actualizacion_anio integer,
     infraestructura_es_snapshot boolean,
+    infraestructura_temporalidad text,
     infraestructura_uso_recomendado text
 );
 
@@ -145,6 +183,14 @@ CREATE TABLE IF NOT EXISTS analytics.modeling_panel (
     alcaldia_nombre text,
     anio integer,
     target_robos_patrimoniales_total bigint,
+    target_robos_log1p double precision,
+    share_robos_patrimoniales_sobre_total_delitos double precision,
+    share_robo_a_transeunte double precision,
+    share_robo_a_negocio double precision,
+    share_robo_a_casa_habitacion double precision,
+    share_robo_de_vehiculo double precision,
+    share_robo_de_accesorios_auto double precision,
+    share_robo_del_interior_de_vehiculo double precision,
     mmip_wmean double precision,
     rei_wmean double precision,
     nbi_wmean double precision,
@@ -171,7 +217,8 @@ CREATE TABLE IF NOT EXISTS analytics.modeling_panel (
     n_registros_sociales integer,
     factor_sum bigint,
     infraestructura_actualizacion_anio integer,
-    infraestructura_es_snapshot boolean
+    infraestructura_es_snapshot boolean,
+    infraestructura_temporalidad text
 );
 
 CREATE TABLE IF NOT EXISTS analytics.feature_catalog (
@@ -182,6 +229,7 @@ CREATE TABLE IF NOT EXISTS analytics.feature_catalog (
     description text,
     leakage_risk text,
     recommended_for_modeling boolean,
-    temporal_behavior text
+    temporal_behavior text,
+    notes text
 );
 

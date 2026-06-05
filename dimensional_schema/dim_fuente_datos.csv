@@ -1,5 +1,6 @@
 fuente_datos_id,fuente_nombre,fuente_tipo,archivo_origen,carpeta_origen,cobertura_temporal,granularidad_original,granularidad_final,notas_uso
 1,Pobreza ENIGH MMIP,csv,datasets\enigh_16_20.csv,datasets,"2016, 2018, 2020 si estan disponibles",persona u hogar,alcaldia-anio,Promedios ponderados por factor.
 2,Infraestructura urbana,csv,datasets\infraestructura.csv,datasets,snapshot 2022,colonia,colonia y alcaldia,variable estructural contextual; no interpretar como medicion anual
-3,FGJ carpetas de investigacion,csv,datasets\carpetasFGJ_acumulado_2025_01.csv,datasets,segun archivo original,carpeta de investigacion,alcaldia-mes-subtipo y alcaldia-anio,Clasificacion exploratoria de robos patrimoniales por texto de delito.
-4,Panel integrado ETL,derivado,data/processed/analytics/panel_alcaldia_anio.csv,data/processed/analytics,anios comunes entre pobreza y FGJ,alcaldia-anio,alcaldia-anio,"No afirma causalidad; usar para exploracion, BI y modelos base."
+3,FGJ delitos generales,csv,datasets\carpetasFGJ_acumulado_2025_01.csv,datasets,2016-2025,carpeta de investigacion,alcaldia-anio,Control anual de delitos generales FGJ.
+4,FGJ robos patrimoniales,csv derivado,data/processed/robbery_only/fgj_robos_patrimoniales_clean.csv,data/processed/robbery_only,2016-2025,carpeta de investigacion,alcaldia-mes-subtipo y alcaldia-anio,Solo seis subtipos patrimoniales; no incluye OTRO.
+5,Panel integrado ETL,derivado,data/processed/analytics/panel_alcaldia_anio.csv,data/processed/analytics,anios comunes entre pobreza y FGJ,alcaldia-anio,alcaldia-anio,"No afirma causalidad; usar para exploracion, BI y modelos base."

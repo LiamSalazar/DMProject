@@ -19,6 +19,7 @@ RAW_DIR = DATA_DIR / "raw"
 PROCESSED_DIR = DATA_DIR / "processed"
 CLEAN_DIR = PROCESSED_DIR / "clean"
 ANALYTICS_DIR = PROCESSED_DIR / "analytics"
+ROBBERY_ONLY_DIR = PROCESSED_DIR / "robbery_only"
 DIMENSIONAL_DIR = ROOT / "dimensional_schema"
 SQL_DIR = ROOT / "sql"
 REPORTS_DIR = ROOT / "reports"
@@ -31,9 +32,12 @@ CSV_NULL = r"\N"
 CSV_ENCODINGS = ("utf-8", "utf-8-sig", "latin1")
 INFRA_SNAPSHOT_YEAR = 2022
 INFRA_SNAPSHOT_TIME_ID = 202200
+INFRA_TEMPORALITY = "static_snapshot_2022"
 INFRA_USE_RECOMMENDED = (
     "variable estructural contextual; no interpretar como medicion anual"
 )
+FGJ_YEAR_MIN = 2016
+FGJ_YEAR_MAX = 2025
 
 CANONICAL_ALCALDIAS = [
     "AZCAPOTZALCO",
@@ -131,15 +135,15 @@ INFRA_FEATURES = [
     "drenaje_promedio",
 ]
 
-ROBO_SUBTIPOS = [
+ROBO_PATRIMONIAL_SUBTIPOS = [
     "ROBO_A_TRANSEUNTE",
     "ROBO_A_NEGOCIO",
     "ROBO_A_CASA_HABITACION",
     "ROBO_DE_VEHICULO",
     "ROBO_DE_ACCESORIOS_AUTO",
     "ROBO_DEL_INTERIOR_DE_VEHICULO",
-    "OTRO",
 ]
+ROBO_SUBTIPOS = ROBO_PATRIMONIAL_SUBTIPOS
 ROBO_SUBTIPO_COLUMNS = {
     "ROBO_A_TRANSEUNTE": "robo_a_transeunte",
     "ROBO_A_NEGOCIO": "robo_a_negocio",
@@ -189,6 +193,7 @@ def ensure_dirs() -> None:
         PROCESSED_DIR,
         CLEAN_DIR,
         ANALYTICS_DIR,
+        ROBBERY_ONLY_DIR,
         DIMENSIONAL_DIR,
         SQL_DIR,
         REPORTS_DIR,

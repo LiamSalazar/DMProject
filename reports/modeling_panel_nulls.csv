@@ -5,6 +5,14 @@ alcaldia_key,0,48,0.0
 alcaldia_nombre,0,48,0.0
 anio,0,48,0.0
 target_robos_patrimoniales_total,0,48,0.0
+target_robos_log1p,0,48,0.0
+share_robos_patrimoniales_sobre_total_delitos,0,48,0.0
+share_robo_a_transeunte,0,48,0.0
+share_robo_a_negocio,0,48,0.0
+share_robo_a_casa_habitacion,0,48,0.0
+share_robo_de_vehiculo,0,48,0.0
+share_robo_de_accesorios_auto,0,48,0.0
+share_robo_del_interior_de_vehiculo,0,48,0.0
 mmip_wmean,0,48,0.0
 rei_wmean,0,48,0.0
 nbi_wmean,0,48,0.0
@@ -32,3 +40,4 @@ n_registros_sociales,0,48,0.0
 factor_sum,0,48,0.0
 infraestructura_actualizacion_anio,0,48,0.0
 infraestructura_es_snapshot,0,48,0.0
+infraestructura_temporalidad,0,48,0.0

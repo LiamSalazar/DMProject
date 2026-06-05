@@ -1,10 +1,20 @@
 # Mineria de datos CDMX
 
-Proyecto ETL para explorar asociaciones entre pobreza multidimensional, infraestructura urbana y robos patrimoniales por alcaldia de la Ciudad de Mexico. El flujo no prueba causalidad; deja datos listos para EDA, BI, modelos exploratorios y carga futura en PostgreSQL.
+ETL reproducible para explorar asociaciones entre pobreza multidimensional, infraestructura urbana y robos patrimoniales por alcaldia de la Ciudad de Mexico. El proyecto no afirma causalidad; deja datos listos para EDA, BI, ML exploratorio e implementacion posterior en PostgreSQL.
 
-## Datasets
+## Fuentes
 
-Los CSV originales se leen desde `datasets/` y no se modifican. La carpeta `Documentacion/` puede incluir el diccionario MMIP usado para enriquecer `feature_catalog.csv` y `dim_variable_social.csv`.
+- `datasets/`: CSV originales, sin modificarlos.
+- `Documentacion/`: diccionario MMIP y material complementario si esta disponible.
+
+## Estructura
+
+- `data/processed/clean/`: fuentes limpias.
+- `data/processed/analytics/`: panel, agregados y catalogo de features.
+- `data/processed/robbery_only/`: FGJ y agregados solo de robos patrimoniales.
+- `dimensional_schema/`: dimensiones y hechos para BI/PostgreSQL.
+- `sql/`: scripts de creacion, carga y validacion.
+- `reports/etl_report.md`: informe breve del ETL.
 
 ## Ejecucion
 
@@ -12,42 +22,47 @@ Los CSV originales se leen desde `datasets/` y no se modifican. La carpeta `Docu
 python scripts/run_etl.py
 ```
 
-Salidas principales:
+## FGJ general vs robos patrimoniales
 
-- CSV limpios: `data/processed/clean/`.
-- CSV analiticos: `data/processed/analytics/`.
-- Esquema dimensional: `dimensional_schema/`.
-- Scripts SQL: `sql/`.
-- Informe breve: `reports/etl_report.md`.
+`data/processed/clean/fgj_clean.csv` conserva delitos validos de FGJ entre 2016 y 2025. Puede contener `OTRO` para trazabilidad.
 
-## Limpieza aplicada
+`data/processed/robbery_only/fgj_robos_patrimoniales_clean.csv` contiene exclusivamente registros con `is_robo_patrimonial = 1`. `OTRO` no aparece en esta capa ni en hechos de robos patrimoniales.
 
-El ETL normaliza columnas a `snake_case`, limpia espacios, estandariza alcaldias con `alcaldia_key`, filtra CDMX en pobreza, calcula promedios ponderados por `factor`, procesa FGJ por chunks, clasifica robos patrimoniales por texto de delito y agrega infraestructura de colonia a alcaldia.
+Los seis subtipos patrimoniales son: `ROBO_A_TRANSEUNTE`, `ROBO_A_NEGOCIO`, `ROBO_A_CASA_HABITACION`, `ROBO_DE_VEHICULO`, `ROBO_DE_ACCESORIOS_AUTO` y `ROBO_DEL_INTERIOR_DE_VEHICULO`.
 
-Infraestructura se trata como snapshot estructural:
+## Infraestructura
+
+Infraestructura es snapshot estructural 2022:
 
 - `infraestructura_actualizacion_anio = 2022`
 - `infraestructura_es_snapshot = true`
-- `infraestructura_uso_recomendado = "variable estructural contextual; no interpretar como medicion anual"`
+- `infraestructura_temporalidad = static_snapshot_2022`
+
+No debe interpretarse como medicion anual.
 
 ## Panel y ML
 
-`data/processed/analytics/modeling_panel.csv` usa grano alcaldia-anio. Incluye ids, target, features sociales, features de infraestructura y controles. No escala ni imputa variables; cualquier imputacion debe hacerse dentro del pipeline de modelado.
+El panel principal usa los anios comunes entre pobreza y FGJ. Si existen, se usan 2016, 2018 y 2020, con meta de 48 filas: 16 alcaldias por 3 anios.
 
-## Modelo dimensional
+Para EDA usa `data/processed/analytics/panel_alcaldia_anio.csv`. Para ML exploratorio usa `data/processed/analytics/modeling_panel.csv`. El ETL no escala ni imputa silenciosamente. Las columnas derivadas del target se documentan en `feature_catalog.csv` y no se recomiendan como predictores.
 
-La constelacion separa hechos de delitos, pobreza, infraestructura y panel, conectados por dimensiones compartidas. Para BI territorial usar hechos anuales; para detalle mensual usar `fact_delitos_alcaldia_mes_subtipo`; para ML usar `analytics.modeling_panel` o `dw.fact_panel_analitico_alcaldia_anio`.
+## BI y esquema dimensional
+
+Para BI usa `dimensional_schema/`. Para robos mensuales usa `fact_robos_patrimoniales_alcaldia_mes_subtipo`. Para delitos generales de control usa `fact_delitos_generales_alcaldia_anio`.
 
 ```mermaid
 erDiagram
 dim_alcaldia ||--o{ dim_colonia : alcaldia_id
-dim_alcaldia ||--o{ fact_delitos_alcaldia_mes_subtipo : alcaldia_id
-dim_tiempo ||--o{ fact_delitos_alcaldia_mes_subtipo : tiempo_id
-dim_delito_subtipo ||--o{ fact_delitos_alcaldia_mes_subtipo : delito_subtipo_id
-dim_fuente_datos ||--o{ fact_delitos_alcaldia_mes_subtipo : fuente_datos_id
-dim_alcaldia ||--o{ fact_delitos_alcaldia_anio : alcaldia_id
-dim_tiempo ||--o{ fact_delitos_alcaldia_anio : tiempo_id
-dim_fuente_datos ||--o{ fact_delitos_alcaldia_anio : fuente_datos_id
+dim_alcaldia ||--o{ fact_delitos_generales_alcaldia_anio : alcaldia_id
+dim_tiempo ||--o{ fact_delitos_generales_alcaldia_anio : tiempo_id
+dim_fuente_datos ||--o{ fact_delitos_generales_alcaldia_anio : fuente_datos_id
+dim_alcaldia ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : alcaldia_id
+dim_tiempo ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : tiempo_id
+dim_delito_subtipo ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : delito_subtipo_id
+dim_fuente_datos ||--o{ fact_robos_patrimoniales_alcaldia_mes_subtipo : fuente_datos_id
+dim_alcaldia ||--o{ fact_robos_patrimoniales_alcaldia_anio : alcaldia_id
+dim_tiempo ||--o{ fact_robos_patrimoniales_alcaldia_anio : tiempo_id
+dim_fuente_datos ||--o{ fact_robos_patrimoniales_alcaldia_anio : fuente_datos_id
 dim_alcaldia ||--o{ fact_pobreza_alcaldia_anio : alcaldia_id
 dim_tiempo ||--o{ fact_pobreza_alcaldia_anio : tiempo_id
 dim_fuente_datos ||--o{ fact_pobreza_alcaldia_anio : fuente_datos_id
@@ -65,14 +80,14 @@ dim_fuente_datos ||--o{ fact_panel_analitico_alcaldia_anio : fuente_datos_id
 
 ## Carga futura en PostgreSQL
 
-Los scripts SQL no se ejecutan automaticamente. Primero crear la base manualmente:
+Los scripts SQL no se ejecutan automaticamente. Crear la base manualmente:
 
 ```bash
 createdb mineria_cdmx
 psql -d mineria_cdmx
 ```
 
-Desde `psql`, ejecutar en este orden desde la raiz del proyecto:
+Dentro de `psql`, desde la raiz del proyecto:
 
 ```sql
 \i sql/01_create_schemas.sql
@@ -100,4 +115,4 @@ psql -d mineria_cdmx -f sql/08_copy_dimensional_csv.sql
 psql -d mineria_cdmx -f sql/09_validation_queries.sql
 ```
 
-Los `COPY` usan rutas relativas; deben ejecutarse desde la raiz del proyecto o ajustar las rutas de los CSV.
+Los `COPY` usan rutas relativas y deben ejecutarse desde la raiz del proyecto o ajustar rutas.

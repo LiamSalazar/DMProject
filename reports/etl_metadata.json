@@ -394,6 +394,7 @@
         "colonia_nombre",
         "infraestructura_actualizacion_anio",
         "infraestructura_es_snapshot",
+        "infraestructura_temporalidad",
         "infraestructura_uso_recomendado"
       ],
       "columns_analytics": [
@@ -403,6 +404,7 @@
         "colonias_count",
         "infraestructura_actualizacion_anio",
         "infraestructura_es_snapshot",
+        "infraestructura_temporalidad",
         "infraestructura_uso_recomendado",
         "ba1_noeqsa_sum",
         "ba8_nomerc_sum",
@@ -464,10 +466,65 @@
     "fgj": {
       "source": "datasets\\carpetasFGJ_acumulado_2025_01.csv",
       "original_rows": 2098743,
-      "clean_rows": 2054739,
-      "analytics_month_rows": 15319,
-      "analytics_annual_rows": 415,
-      "years": [
+      "clean_rows": 2024266,
+      "robbery_rows": 610306,
+      "analytics_general_annual_rows": 160,
+      "robbery_month_rows": 10362,
+      "robbery_annual_rows": 160,
+      "raw_years": [
+        222,
+        1906,
+        1915,
+        1917,
+        1930,
+        1942,
+        1950,
+        1952,
+        1954,
+        1955,
+        1956,
+        1957,
+        1958,
+        1960,
+        1961,
+        1962,
+        1963,
+        1964,
+        1965,
+        1966,
+        1967,
+        1968,
+        1969,
+        1970,
+        1971,
+        1972,
+        1973,
+        1974,
+        1975,
+        1976,
+        1977,
+        1978,
+        1979,
+        1980,
+        1981,
+        1982,
+        1983,
+        1984,
+        1985,
+        1986,
+        1987,
+        1988,
+        1989,
+        1990,
+        1991,
+        1992,
+        1993,
+        1994,
+        1995,
+        1996,
+        1997,
+        1998,
+        1999,
         2000,
         2001,
         2002,
@@ -495,6 +552,26 @@
         2024,
         2025
       ],
+      "raw_year_range": [
+        222,
+        2025
+      ],
+      "years": [
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "clean_year_range": [
+        2016,
+        2025
+      ],
       "alcaldias": [
         "ALVARO OBREGON",
         "AZCAPOTZALCO",
@@ -515,12 +592,13 @@
       ],
       "dropped_rows": {
         "alcaldia_no_valida": 42482,
-        "anio_o_mes_no_valido": 1593
+        "anio_o_mes_no_parseable": 559,
+        "fuera_rango_proyecto_2016_2025": 32599
       },
       "coordinates": {
-        "validas": 1997536,
-        "faltantes": 101207,
-        "fuera_rango_aproximado_cdmx": 2
+        "validas": 1967464,
+        "faltantes": 56802,
+        "fuera_rango_aproximado_cdmx": 1
       },
       "columns_clean": [
         "fecha_hecho",
@@ -539,20 +617,7 @@
         "subtipo_robo_patrimonial",
         "is_robo_patrimonial"
       ],
-      "columns_analytics_month": [
-        "alcaldia_key",
-        "alcaldia_nombre",
-        "alcaldia_id",
-        "anio",
-        "mes",
-        "tiempo_id",
-        "subtipo_robo_patrimonial",
-        "total_delitos",
-        "registros_con_coordenadas",
-        "latitud_promedio",
-        "longitud_promedio"
-      ],
-      "columns_analytics_annual": [
+      "columns_analytics_general_annual": [
         "alcaldia_key",
         "alcaldia_nombre",
         "alcaldia_id",
@@ -560,13 +625,36 @@
         "tiempo_id",
         "total_delitos_fgj",
         "total_robos_patrimoniales",
+        "total_no_robos_patrimoniales",
+        "share_robos_patrimoniales_sobre_total_delitos"
+      ],
+      "columns_robbery_month": [
+        "alcaldia_key",
+        "alcaldia_nombre",
+        "alcaldia_id",
+        "anio",
+        "mes",
+        "tiempo_id",
+        "subtipo_robo_patrimonial",
+        "total_robos_patrimoniales",
+        "registros_con_coordenadas",
+        "latitud_promedio",
+        "longitud_promedio"
+      ],
+      "columns_robbery_annual": [
+        "alcaldia_key",
+        "alcaldia_nombre",
+        "alcaldia_id",
+        "anio",
+        "tiempo_id",
         "target_robos_patrimoniales_total",
         "robo_a_transeunte",
         "robo_a_negocio",
         "robo_a_casa_habitacion",
         "robo_de_vehiculo",
         "robo_de_accesorios_auto",
-        "robo_del_interior_de_vehiculo"
+        "robo_del_interior_de_vehiculo",
+        "target_robos_log1p"
       ]
     }
   },
@@ -604,7 +692,7 @@
       "cassi_wmean",
       "cyt_wmean",
       "total_delitos_fgj",
-      "total_robos_patrimoniales",
+      "share_robos_patrimoniales_sobre_total_delitos",
       "target_robos_patrimoniales_total",
       "robo_a_transeunte",
       "robo_a_negocio",
@@ -612,6 +700,13 @@
       "robo_de_vehiculo",
       "robo_de_accesorios_auto",
       "robo_del_interior_de_vehiculo",
+      "target_robos_log1p",
+      "share_robo_a_transeunte",
+      "share_robo_a_negocio",
+      "share_robo_a_casa_habitacion",
+      "share_robo_de_vehiculo",
+      "share_robo_de_accesorios_auto",
+      "share_robo_del_interior_de_vehiculo",
       "colonias_count",
       "mercados_total",
       "locales_total",
@@ -625,6 +720,7 @@
       "drenaje_promedio",
       "infraestructura_actualizacion_anio",
       "infraestructura_es_snapshot",
+      "infraestructura_temporalidad",
       "infraestructura_uso_recomendado"
     ],
     "modeling_columns": [
@@ -634,6 +730,14 @@
       "alcaldia_nombre",
       "anio",
       "target_robos_patrimoniales_total",
+      "target_robos_log1p",
+      "share_robos_patrimoniales_sobre_total_delitos",
+      "share_robo_a_transeunte",
+      "share_robo_a_negocio",
+      "share_robo_a_casa_habitacion",
+      "share_robo_de_vehiculo",
+      "share_robo_de_accesorios_auto",
+      "share_robo_del_interior_de_vehiculo",
       "mmip_wmean",
       "rei_wmean",
       "nbi_wmean",
@@ -660,24 +764,26 @@
       "n_registros_sociales",
       "factor_sum",
       "infraestructura_actualizacion_anio",
-      "infraestructura_es_snapshot"
+      "infraestructura_es_snapshot",
+      "infraestructura_temporalidad"
     ],
-    "feature_catalog_rows": 33,
+    "feature_catalog_rows": 42,
     "nulls": {}
   },
   "dimensional_outputs": {
     "dimensions": {
       "dim_alcaldia": 16,
-      "dim_tiempo": 327,
-      "dim_delito_subtipo": 7,
+      "dim_tiempo": 119,
+      "dim_delito_subtipo": 6,
       "dim_variable_social": 12,
       "dim_variable_infraestructura": 21,
-      "dim_fuente_datos": 4,
+      "dim_fuente_datos": 5,
       "dim_colonia": 1814
     },
     "facts": {
-      "fact_delitos_alcaldia_mes_subtipo": 15319,
-      "fact_delitos_alcaldia_anio": 415,
+      "fact_delitos_generales_alcaldia_anio": 160,
+      "fact_robos_patrimoniales_alcaldia_mes_subtipo": 10362,
+      "fact_robos_patrimoniales_alcaldia_anio": 160,
       "fact_pobreza_alcaldia_anio": 48,
       "fact_infraestructura_alcaldia": 16,
       "fact_infraestructura_colonia": 1814,
