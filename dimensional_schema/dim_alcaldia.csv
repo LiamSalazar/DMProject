@@ -1,0 +1,17 @@
+alcaldia_id,alcaldia_key,alcaldia_nombre,municipio_enigh,cve_ent,entidad_nombre
+1,AZCAPOTZALCO,Azcapotzalco,2,9,Ciudad De Mexico
+2,ALVARO OBREGON,Alvaro Obregon,10,9,Ciudad De Mexico
+3,BENITO JUAREZ,Benito Juarez,14,9,Ciudad De Mexico
+4,COYOACAN,Coyoacan,3,9,Ciudad De Mexico
+5,CUAJIMALPA DE MORELOS,Cuajimalpa De Morelos,4,9,Ciudad De Mexico
+6,CUAUHTEMOC,Cuauhtemoc,15,9,Ciudad De Mexico
+7,GUSTAVO A MADERO,Gustavo A Madero,5,9,Ciudad De Mexico
+8,IZTACALCO,Iztacalco,6,9,Ciudad De Mexico
+9,IZTAPALAPA,Iztapalapa,7,9,Ciudad De Mexico
+10,LA MAGDALENA CONTRERAS,La Magdalena Contreras,8,9,Ciudad De Mexico
+11,MIGUEL HIDALGO,Miguel Hidalgo,16,9,Ciudad De Mexico
+12,MILPA ALTA,Milpa Alta,9,9,Ciudad De Mexico
+13,TLAHUAC,Tlahuac,11,9,Ciudad De Mexico
+14,TLALPAN,Tlalpan,12,9,Ciudad De Mexico
+15,VENUSTIANO CARRANZA,Venustiano Carranza,17,9,Ciudad De Mexico
+16,XOCHIMILCO,Xochimilco,13,9,Ciudad De Mexico

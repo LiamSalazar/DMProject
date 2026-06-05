@@ -1,0 +1,34 @@
+feature_name,source_dataset,feature_role,data_type,description,leakage_risk,recommended_for_modeling,temporal_behavior
+alcaldia_id,etl,id,integer,Identificador o llave de la unidad alcaldia-anio.,none,False,metadata
+tiempo_id,etl,id,integer,Identificador o llave de la unidad alcaldia-anio.,none,False,metadata
+alcaldia_key,etl,id,text,Identificador o llave de la unidad alcaldia-anio.,none,False,metadata
+alcaldia_nombre,etl,id,text,Identificador o llave de la unidad alcaldia-anio.,none,False,metadata
+anio,etl,id,integer,Identificador o llave de la unidad alcaldia-anio.,none,False,annual
+target_robos_patrimoniales_total,fgj,target,integer,Total anual de robos patrimoniales clasificados para la alcaldia.,target,False,annual
+mmip_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de mmip.,low,True,annual
+rei_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de rei.,low,True,annual
+nbi_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de nbi.,low,True,annual
+ccevj_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de ccevj.,low,True,annual
+cbdj_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de cbdj.,low,True,annual
+csj_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de csj.,low,True,annual
+ctelj_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de ctelj.,low,True,annual
+cenj_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de cenj.,low,True,annual
+ett_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de ett.,low,True,annual
+casi_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de casi.,low,True,annual
+cassi_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de cassi.,low,True,annual
+cyt_wmean,pobreza_mmip,feature,numeric,Promedio ponderado por factor de cyt.,low,True,annual
+mercados_total,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+locales_total,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+iluminacion_total,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+iluminacion_promedio,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+residuos_ton_total,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+equipamiento_salud_total,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+equipamiento_educativo_total,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+agua_potable_promedio,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+electricidad_promedio,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+drenaje_promedio,infraestructura,feature,numeric,Indicador urbano agregado por alcaldia desde infraestructura snapshot 2022.,low,True,static_snapshot_2022
+total_delitos_fgj,fuente,control,integer,"Variable de control, trazabilidad o cobertura del panel.",medium_same_year_control,False,annual
+n_registros_sociales,fuente,control,integer,"Variable de control, trazabilidad o cobertura del panel.",low,True,annual
+factor_sum,fuente,control,numeric,"Variable de control, trazabilidad o cobertura del panel.",low,True,annual
+infraestructura_actualizacion_anio,etl,control,integer,"Variable de control, trazabilidad o cobertura del panel.",low,True,static_snapshot_2022
+infraestructura_es_snapshot,etl,metadata,boolean,"Variable de control, trazabilidad o cobertura del panel.",low,True,static_snapshot_2022

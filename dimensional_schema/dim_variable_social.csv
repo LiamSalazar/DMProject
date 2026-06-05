@@ -1,0 +1,13 @@
+variable_social_id,variable_nombre,variable_origen,descripcion,metodo_agregacion,rango_esperado,recomendada_modelado
+1,mmip_wmean,mmip,Variable social mmip agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+2,rei_wmean,rei,Variable social rei agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+3,nbi_wmean,nbi,Variable social nbi agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+4,ccevj_wmean,ccevj,Variable social ccevj agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+5,cbdj_wmean,cbdj,Variable social cbdj agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+6,csj_wmean,csj,Variable social csj agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+7,ctelj_wmean,ctelj,Variable social ctelj agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+8,cenj_wmean,cenj,Variable social cenj agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+9,ett_wmean,ett,Variable social ett agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+10,casi_wmean,casi,Variable social casi agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+11,cassi_wmean,cassi,Variable social cassi agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True
+12,cyt_wmean,cyt,Variable social cyt agregada por promedio ponderado.,promedio ponderado por factor,revisar segun diccionario MMIP,True

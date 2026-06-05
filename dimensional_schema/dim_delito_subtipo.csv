@@ -1,0 +1,8 @@
+delito_subtipo_id,subtipo_robo_patrimonial,descripcion,es_robo_patrimonial
+1,ROBO_A_TRANSEUNTE,Robo a transeunte o pasajero clasificado desde delito.,True
+2,ROBO_A_NEGOCIO,Robo a negocio clasificado desde delito.,True
+3,ROBO_A_CASA_HABITACION,Robo a casa habitacion clasificado desde delito.,True
+4,ROBO_DE_VEHICULO,Robo de vehiculo clasificado desde delito.,True
+5,ROBO_DE_ACCESORIOS_AUTO,Robo de accesorios de auto clasificado desde delito.,True
+6,ROBO_DEL_INTERIOR_DE_VEHICULO,Robo de objetos del interior de vehiculo.,True
+7,OTRO,Delitos no incluidos en el target principal de robos patrimoniales.,False

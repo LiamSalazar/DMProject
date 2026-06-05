@@ -1,0 +1,22 @@
+variable_infraestructura_id,variable_nombre,variable_origen,descripcion,metodo_agregacion,actualizacion_anio,temporalidad,recomendada_modelado
+1,ba1_noeqsa_sum,ba1_noeqsa,Indicador de infraestructura ba1_noeqsa_sum desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+2,ba8_nomerc_sum,ba8_nomerc,Indicador de infraestructura ba8_nomerc_sum desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+3,ba8_noloca_sum,ba8_noloca,Indicador de infraestructura ba8_noloca_sum desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+4,ba9_no_gua_sum,ba9_no_gua,Indicador de infraestructura ba9_no_gua_sum desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+5,ba3_noeqed_sum,ba3_noeqed,Indicador de infraestructura ba3_noeqed_sum desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+6,resid_ton_sum,resid_ton,Indicador de infraestructura resid_ton_sum desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+7,alump_sum_total,alump_sum,Indicador de infraestructura alump_sum_total desde snapshot 2022.,suma,2022,static_snapshot_2022,False
+8,alump_mean_avg,alump_mean,Indicador de infraestructura alump_mean_avg desde snapshot 2022.,promedio,2022,static_snapshot_2022,False
+9,p_porcelec_avg,p_porcelec,Indicador de infraestructura p_porcelec_avg desde snapshot 2022.,promedio,2022,static_snapshot_2022,False
+10,p_aguapot_avg,p_aguapot,Indicador de infraestructura p_aguapot_avg desde snapshot 2022.,promedio,2022,static_snapshot_2022,False
+11,r_val_dren_avg,r_val_dren,Indicador de infraestructura r_val_dren_avg desde snapshot 2022.,promedio,2022,static_snapshot_2022,False
+12,mercados_total,ba8_nomerc,Indicador de infraestructura mercados_total desde snapshot 2022.,suma,2022,static_snapshot_2022,True
+13,locales_total,ba8_noloca,Indicador de infraestructura locales_total desde snapshot 2022.,suma,2022,static_snapshot_2022,True
+14,iluminacion_total,alump_sum,Indicador de infraestructura iluminacion_total desde snapshot 2022.,suma,2022,static_snapshot_2022,True
+15,iluminacion_promedio,alump_mean,Indicador de infraestructura iluminacion_promedio desde snapshot 2022.,promedio,2022,static_snapshot_2022,True
+16,residuos_ton_total,resid_ton,Indicador de infraestructura residuos_ton_total desde snapshot 2022.,suma,2022,static_snapshot_2022,True
+17,equipamiento_salud_total,ba1_noeqsa,Indicador de infraestructura equipamiento_salud_total desde snapshot 2022.,suma,2022,static_snapshot_2022,True
+18,equipamiento_educativo_total,ba3_noeqed,Indicador de infraestructura equipamiento_educativo_total desde snapshot 2022.,suma,2022,static_snapshot_2022,True
+19,agua_potable_promedio,p_aguapot,Indicador de infraestructura agua_potable_promedio desde snapshot 2022.,promedio,2022,static_snapshot_2022,True
+20,electricidad_promedio,p_porcelec,Indicador de infraestructura electricidad_promedio desde snapshot 2022.,promedio,2022,static_snapshot_2022,True
+21,drenaje_promedio,r_val_dren,Indicador de infraestructura drenaje_promedio desde snapshot 2022.,promedio,2022,static_snapshot_2022,True
