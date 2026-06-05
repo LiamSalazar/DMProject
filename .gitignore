@@ -6,6 +6,7 @@ datasets/carpetasFGJ_acumulado_2025_01.csv
 datasets/
 csv_tableau/
 data/processed/clean/fgj_clean.csv
+data\processed\robbery_only\fgj_robos_patrimoniales_clean.csv
 
 # Archivos temporales de Python/Jupyter (comunes en minería de datos)
 __pycache__/
