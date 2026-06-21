@@ -181,7 +181,7 @@ Si se usa Google Colab, montar o subir el repositorio completo y ajustar el dire
 <a id="indice"></a>
 ## Índice
 
-- [Resumen ejecutivo](#resumen-ejecutivo)
+- [Resumen](#resumen)
 - [Descripción completa del proyecto](#descripcion-completa-del-proyecto)
 - [Problema, objetivos, preguntas de investigación y alcance](#problema-objetivos-preguntas-investigacion-alcance)
 - [Fuentes de datos](#fuentes-de-datos)
@@ -200,8 +200,8 @@ Si se usa Google Colab, montar o subir el repositorio completo y ajustar el dire
 - [Solución de problemas frecuentes](#solucion-problemas-frecuentes)
 - [Créditos del equipo](#creditos-del-equipo)
 
-<a id="resumen-ejecutivo"></a>
-## Resumen ejecutivo
+<a id="resumen"></a>
+## Resumen
 
 El proyecto diseña una arquitectura completa de minería de datos para integrar tres dimensiones territoriales de la Ciudad de México: pobreza multidimensional, infraestructura urbana y robos patrimoniales registrados por carpetas de investigación.
 
