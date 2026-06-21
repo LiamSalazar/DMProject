@@ -1,3 +1,9 @@
 pandas
 numpy
 openpyxl
+matplotlib
+seaborn
+scikit-learn
+statsmodels
+scipy
+jupyter

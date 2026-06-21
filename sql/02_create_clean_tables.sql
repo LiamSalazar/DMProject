@@ -109,4 +109,3 @@ CREATE TABLE IF NOT EXISTS clean.fgj_clean (
     subtipo_robo_patrimonial text,
     is_robo_patrimonial integer
 );
-

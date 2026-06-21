@@ -147,9 +147,11 @@ def write_create_file(filename: str, schema: str, tables: dict[str, Path]) -> No
         "-- Ejecutar desde PostgreSQL despues de crear la base de datos.\n",
         f"-- Tablas en esquema {schema}.\n\n",
     ]
-    for table, path in tables.items():
+    table_items = list(tables.items())
+    for index, (table, path) in enumerate(table_items):
         parts.append(create_table_sql(schema, table, path))
-        parts.append("\n")
+        if index < len(table_items) - 1:
+            parts.append("\n")
     (SQL_DIR / filename).write_text("".join(parts), encoding="utf-8")
 
 
@@ -271,6 +273,11 @@ DROP SCHEMA IF EXISTS clean CASCADE;
 
 
 def write_readme() -> None:
+    readme_path = ROOT / "README.md"
+    if readme_path.exists():
+        print("README.md maestro preservado; solo se regeneraron scripts SQL.")
+        return
+
     text = """# Mineria de datos CDMX
 
 ETL reproducible para explorar asociaciones entre pobreza multidimensional, infraestructura urbana y robos patrimoniales por alcaldia de la Ciudad de Mexico. El proyecto no afirma causalidad; deja datos listos para EDA, BI, ML exploratorio e implementacion posterior en PostgreSQL.
